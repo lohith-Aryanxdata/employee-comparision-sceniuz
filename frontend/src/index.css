@@ -19,7 +19,7 @@
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
-  background: var(--bg);
+  background: #000000;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -32,8 +32,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
+    --text: #ffffff;
+    --text-h: #ffffff;
     --bg: #16171d;
     --border: #2e303a;
     --code-bg: #1f2028;
@@ -55,7 +55,8 @@ body {
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
+  /* was 1126px */
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -64,6 +65,7 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+
 }
 
 h1,
@@ -74,23 +76,27 @@ h2 {
 }
 
 h1 {
-  font-size: 56px;
+  font-size: 50px;
   letter-spacing: -1.68px;
   margin: 32px 0;
+
   @media (max-width: 1024px) {
     font-size: 36px;
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
+
   @media (max-width: 1024px) {
     font-size: 20px;
   }
 }
+
 p {
   margin: 0;
 }
@@ -108,4 +114,116 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+.login-page h1 {
+  color: #ffffff !important;
+  margin: 0;
+}
+
+.login-page button[type="submit"] {
+  padding: 0.4rem 1.2rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  border-radius: 0.75rem !important;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
+  box-shadow: 0 0 20px 2px rgba(139, 92, 246, 0.3) !important;
+}
+
+.login-page button[type="submit"]:hover {
+  filter: brightness(0.6) !important;
+  box-shadow: 0 0 28px 4px rgba(13, 0, 44, 0.5) !important;
+}
+
+.login-page .card-spotlight {
+  max-width: 26rem !important;
+  margin: 0 auto !important;
+}
+
+.login-page .card-spotlight label {
+  color: rgb(255, 255, 255) !important;
+  /* 
+   address and password */
+}
+
+.login-page .card-spotlight input {
+  padding: 0.5rem 3rem !important;
+  border-radius: 0.75rem !important;
+  box-shadow: none;
+}
+
+.login-page .card-spotlight input:focus {
+  box-shadow: 0 0 12px 2px rgba(16, 5, 43, 0.25) !important;
+}
+
+.login-page .card-spotlight p,
+.login-page .card-spotlight span {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.login-page .card-spotlight label {
+  margin-bottom: 0.5rem !important;
+  display: block !important;
+}
+
+.login-page {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+}
+
+.login-page>.relative.z-10 {
+  margin: auto !important;
+}
+
+.login-page .absolute.-top-16.left-0 {
+  position: fixed !important;
+  top: 1.5rem !important;
+  left: 1.5rem !important;
+}
+
+.login-page>p:last-child,
+.login-page .text-white\/20.mt-6 {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+.login-page .card-spotlight .font-mono p {
+  font-size: 9px !important;
+}
+
+.login-page .card-spotlight .border-t p {
+  font-size: 9px !important;
+}
+
+.login-page .split-parent {
+  margin-bottom: 0.4rem !important;
+}
+
+.login-page button[type="button"] {
+  padding: 0.2rem !important;
+  border-radius: 0.5rem !important;
+  width: 1.7rem !important;
+  height: 1.7rem !important;
+}
+
+.login-page .card-spotlight .space-y-5>div {
+  margin-bottom: 0.7rem !important;
+}
+
+.login-page .card-spotlight input {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#fluid {
+  width: 100vw !important;
+  height: 100vh !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
 }

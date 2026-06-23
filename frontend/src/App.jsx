@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute, GuestRoute } from "@/components/ui/ProtectedRoute";
-import { EmployeeLayout, AdminLayout } from "@/components/layout";
+import { EmployeeLayout, AdminLayout } from "./components/layout";
 import { PageLoader } from "@/components/ui";
 
 // ── Lazy-loaded pages ──────────────────────────────────────────────────────────

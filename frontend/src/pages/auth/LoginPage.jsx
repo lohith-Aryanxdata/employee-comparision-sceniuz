@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Alert, Spinner } from "@/components/ui";
 import { Zap, Eye, EyeOff } from "lucide-react";
-
-// 👉 REACT BITS: Wrap the card with <MagicCard> or <GlowCard> from React Bits
-// 👉 REACT BITS: Add <Particles> or <Aurora> background effect behind the form
+import SoftAurora from "@/component/SoftAurora/SoftAurora";
+import SpotlightCard from "@/component/SpotlightCard/SpotlightCard";
+import SplitText from "@/component/SplitText/SplitText";
+import Magnet from "@/component/Magnet/Magnet";
+import SplashCursor from "@/component/SplashCursor/SplashCursor";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -31,86 +33,192 @@ export default function LoginPage() {
     }
   };
 
+  const inputClass =
+    "w-full px-4 py-3 text-sm rounded-xl " +
+    "bg-white/5 border border-white/15 " +
+    "text-white placeholder:text-white/25 " +
+    "focus:outline-none focus:border-brand-400/60 " +
+    "focus:shadow-[0_0_16px_2px_rgba(139,92,246,0.2)] " +
+    "transition-all duration-200";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-purple-50 flex items-center justify-center p-4">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-brand-100 rounded-full opacity-40 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-100 rounded-full opacity-40 blur-3xl" />
+    <div className="login-page min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0a0a0f]">
+
+      {/*
+      <SplashCursor
+        TRANSPARENT={true}
+        RAINBOW_MODE={true}
+        DENSITY_DISSIPATION={3.5}
+        VELOCITY_DISSIPATION={2}
+        SPLAT_RADIUS={0.2}
+        SPLAT_FORCE={6000}
+        CURL={3}
+      />
+      /*}
+      {/* SoftAurora Background */}
+      <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }}>
+        <SoftAurora
+          speed={0.6}
+          scale={1.5}
+          brightness={1.2}
+          color1="#6366f1"
+          color2="#a855f7"
+          noiseFrequency={2.5}
+          noiseAmplitude={1.0}
+          bandHeight={0.5}
+          bandSpread={1.2}
+          octaveDecay={0.1}
+          layerOffset={0.4}
+          colorSpeed={1.0}
+          enableMouseInteraction={true}
+          mouseInfluence={0.25}
+        />
       </div>
 
-      <div className="relative w-full max-w-md animate-slide-up">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex p-3 rounded-2xl gradient-brand mb-4 shadow-lg">
-            <Zap size={28} className="text-white" />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 z-[1]" style={{ background: "rgba(8,8,18,0.55)" }} />
+
+
+
+      {/* Logo — fixed top left */}
+      <div className="fixed top-5 left-5 z-20">
+        <Magnet padding={60} magnetStrength={2.5}>
+          <div className="inline-flex p-3 rounded-2xl gradient-brand shadow-lg shadow-brand-500/30">
+            <Zap size={24} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
-          <p className="text-slate-500 text-sm mt-1">Sign in to your SkillAssess account</p>
-        </div>
+        </Magnet>
+      </div>
+
+      {/* Header — fixed to top center */}
+      <div style={{ position: "fixed", top: "2rem", left: 0, right: 0, zIndex: 20, display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}>
+        <SplitText
+          text="Welcome!"
+          tag="h1"
+          className="text-1xl font-bold text-white"
+          splitType="words"
+          delay={60}
+          duration={0.7}
+          from={{ opacity: 0, y: 12 }}
+          to={{ opacity: 1, y: 0 }}
+          textAlign="center"
+        />
+        <SplitText
+          text="Sign in to your Sceniuz account"
+          tag="p"
+          className="text-sm text-white/50"
+          splitType="words"
+          delay={60}
+          duration={0.6}
+          from={{ opacity: 0, y: 10 }}
+          to={{ opacity: 1, y: 0 }}
+          textAlign="center"
+        />
+      </div>
+
+      {/* Centered content */}
+      <div className="relative z-10 w-full max-w-sm px-4 animate-slide-up">
 
         {/* Card */}
-        <div className="card p-8 shadow-lg">
-          {error && <Alert type="error" message={error} className="mb-5" />}
+        <SpotlightCard
+          className="w-full rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl"
+          spotlightColor="rgba(222, 222, 223, 0.7)"
+        >
+          <div className="p-8">
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="email" className="label">Email address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={form.email}
-                onChange={handleChange}
-                className="input"
-                placeholder="you@company.com"
-              />
-            </div>
+            {error && (
+              <div className="mb-5">
+                <Alert type="error" message={error} />
+              </div>
+            )}
 
-            <div>
-              <label htmlFor="password" className="label">Password</label>
-              <div className="relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  required
-                  value={form.password}
-                  onChange={handleChange}
-                  className="input pr-10"
-                  placeholder="••••••••"
-                />
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-6">
+
+                {/* Email */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="email" className="text-xs font-semibold text-white/60 uppercase tracking-widest">
+                    Email address
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={form.email}
+                    onChange={handleChange}
+                    className={inputClass}
+                    placeholder="you@company.com"
+                  />
+                </div>
+
+                {/* Password */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="password" className="text-xs font-semibold text-white/60 uppercase tracking-widest">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      required
+                      value={form.password}
+                      onChange={handleChange}
+                      className={`${inputClass} pr-12`}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((p) => !p)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg
+                                 bg-white/5 hover:bg-white/10 border border-white/10
+                                 text-white/40 hover:text-white/70 transition-all duration-150"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Sign in button */}
                 <button
-                  type="button"
-                  onClick={() => setShowPassword((p) => !p)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 px-6 text-base font-semibold rounded-xl
+                             bg-brand-600 hover:bg-brand-500 active:bg-brand-700
+                             text-white shadow-lg shadow-brand-500/30
+                             transition-all duration-150 flex items-center justify-center gap-2
+                             disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {loading ? <Spinner size="sm" /> : "Sign in"}
                 </button>
+
+              </div>
+            </form>
+
+            {/* Demo credentials */}
+            <div className="mt-6 pt-5 border-t border-white/[0.06]">
+              <p className="text-[10px] font-semibold text-white/20 uppercase tracking-widest mb-2.5">
+                Demo credentials
+              </p>
+              <div className="space-y-1 font-mono text-[11px] text-white/25">
+                <p><span className="text-brand-400/50">Admin</span>{" · "}admin@skillassess.io / Admin@123</p>
+                <p><span className="text-emerald-400/50">Employee</span>{" · "}aarav@skillassess.io / Employee@123</p>
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full py-3 text-base mt-2">
-              {loading ? <Spinner size="sm" /> : "Sign in"}
-            </button>
-          </form>
-
-          <div className="mt-6 p-4 bg-surface-50 rounded-lg border border-surface-200">
-            <p className="text-xs font-semibold text-slate-500 mb-2">Demo credentials</p>
-            <div className="space-y-1 font-mono text-xs text-slate-600">
-              <p><span className="text-brand-600">Admin:</span> admin@skillassess.io / Admin@123</p>
-              <p><span className="text-emerald-600">Employee:</span> aarav@skillassess.io / Employee@123</p>
-            </div>
           </div>
-        </div>
+        </SpotlightCard>
 
-        <p className="text-center text-xs text-slate-400 mt-6">
-          © 2024 SkillAssess Platform. All rights reserved.
-        </p>
       </div>
+
+      {/* Footer — fixed bottom */}
+      <p className="fixed bottom-5 left-1/2 -translate-x-1/2 z-20 text-[11px] text-white/20 whitespace-nowrap">
+        © 2024 SkillAssess Platform. All rights reserved.
+      </p>
+
     </div>
   );
 }
