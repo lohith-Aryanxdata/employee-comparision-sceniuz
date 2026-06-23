@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from "react";
 import { useApi } from "@/hooks/useApi";
 import { adminService } from "@/services";
-import { Spinner, Alert, Avatar, Badge, Modal, ConfirmDialog, EmptyState } from "@/components/ui";
+import { Spinner, Alert, Avatar, Badge, EmptyState } from "@/components/ui";
 import { formatDate, formatPercent } from "@/utils/helpers";
 import { UserPlus, Search, Pencil, Trash2, Users } from "lucide-react";
+import DotField from "@/component/DotField/DotField";
 
 function EmployeeForm({ initial = {}, onSave, onCancel, loading, error }) {
   const [form, setForm] = useState({
@@ -16,29 +17,65 @@ function EmployeeForm({ initial = {}, onSave, onCancel, loading, error }) {
   const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {error && <Alert type="error" message={error} />}
-      <div className="grid grid-cols-2 gap-4">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
         <div>
-          <label className="label">Full Name *</label>
-          <input className="input" value={form.name} onChange={set("name")} placeholder="Aarav Shah" required />
+          <label style={{ display: 'block', color: '#ffffff', fontWeight: 'bold', marginBottom: '8px' }}>Full Name *</label>
+          <input
+            style={{ width: '100%', padding: '14px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', color: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
+            value={form.name}
+            onChange={set("name")}
+            placeholder="Aarav Shah"
+            required
+          />
         </div>
         <div>
-          <label className="label">Email *</label>
-          <input className="input" type="email" value={form.email} onChange={set("email")} placeholder="aarav@company.io" required />
+          <label style={{ display: 'block', color: '#ffffff', fontWeight: 'bold', marginBottom: '8px' }}>Email *</label>
+          <input
+            style={{ width: '100%', padding: '14px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', color: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
+            type="email"
+            value={form.email}
+            onChange={set("email")}
+            placeholder="aarav@company.io"
+            required
+          />
         </div>
-        <div>
-          <label className="label">Department</label>
-          <input className="input" value={form.department} onChange={set("department")} placeholder="Engineering" />
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={{ display: 'block', color: '#ffffff', fontWeight: 'bold', marginBottom: '8px' }}>Department</label>
+          <input
+            style={{ width: '100%', padding: '14px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', color: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
+            value={form.department}
+            onChange={set("department")}
+            placeholder="Engineering"
+          />
         </div>
-        <div>
-          <label className="label">{isEdit ? "New Password (leave blank to keep)" : "Password *"}</label>
-          <input className="input" type="password" value={form.password} onChange={set("password")} placeholder="••••••••" />
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={{ display: 'block', color: '#ffffff', fontWeight: 'bold', marginBottom: '8px' }}>{isEdit ? "New Password (leave blank to keep)" : "Password *"}</label>
+          <input
+            style={{ width: '100%', padding: '14px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', color: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
+            type="password"
+            value={form.password}
+            onChange={set("password")}
+            placeholder="••••••••"
+          />
         </div>
       </div>
-      <div className="flex justify-end gap-3 pt-2">
-        <button onClick={onCancel} className="btn-secondary">Cancel</button>
-        <button onClick={() => onSave(form)} disabled={loading} className="btn-primary">
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', paddingTop: '16px' }}>
+        <button
+          onClick={onCancel}
+          className="hover:bg-white/20 transition-all duration-300"
+          style={{ padding: '16px 32px', borderRadius: '8px', color: '#ffffff', fontWeight: 'bold', backgroundColor: 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer' }}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => onSave(form)}
+          disabled={loading}
+          className="hover:bg-[#9d33ff] hover:shadow-[0_0_20px_rgba(132,0,255,0.6)] transition-all duration-300"
+          style={{ padding: '16px 32px', borderRadius: '8px', color: '#ffffff', fontWeight: 'bold', backgroundColor: '#8400ff', border: 'none', cursor: 'pointer', minWidth: '180px', display: 'flex', justifyContent: 'center' }}
+        >
           {loading ? <Spinner size="sm" /> : isEdit ? "Update Employee" : "Create Employee"}
         </button>
       </div>
@@ -48,7 +85,7 @@ function EmployeeForm({ initial = {}, onSave, onCancel, loading, error }) {
 
 export default function EmployeesPage() {
   const [search, setSearch] = useState("");
-  const [modal, setModal] = useState(null); // null | { mode: "create" | "edit", emp?: {} }
+  const [modal, setModal] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
@@ -94,22 +131,48 @@ export default function EmployeesPage() {
   }, [confirmId, refresh]);
 
   return (
-    <div className="space-y-5">
-      <div className="page-header flex items-center justify-between">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '24px', position: 'relative' }}>
+
+      {/* 👉 THE DOT FIELD BACKGROUND LAYER (TRANSLUCENT & SOFT) */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1, pointerEvents: 'none', backgroundColor: '#050505' }}>
+        <DotField
+          dotRadius={2}
+          dotSpacing={22}
+          /* Using RGBA for translucency (last value is opacity) */
+          gradientFrom="rgba(233, 213, 255, 0.15)"   /* 25% opacity, very soft */
+          gradientTo="rgba(192, 132, 252, 0.15)"     /* 15% opacity, ghost-like */
+          sparkle={false}
+          waveAmplitude={5}
+          cursorForce={0.05}
+          bulgeStrength={20}
+        />
+      </div>
+
+      {/* Centered Header Section */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '24px' }}>
         <div>
-          <h1 className="page-title">Employees</h1>
-          <p className="page-subtitle">Manage employee accounts and view progress</p>
+          <h3 style={{ color: "black" }}>.</h3>
+          <h1 style={{ fontSize: '42px', color: '#ffffff', margin: 0 }}>Employees</h1>
+          <br></br>
+          <p style={{ fontSize: '20px', color: '#ffffff', marginTop: '8px', marginBottom: 0 }}>
+            Manage employee accounts and view progress
+          </p>
         </div>
-        <button onClick={openCreate} className="btn-primary">
-          <UserPlus size={16} /> Add Employee
+
+        <button
+          onClick={openCreate}
+          className="hover:bg-[#9d33ff] hover:shadow-[0_0_20px_rgba(132,0,255,0.7)] transition-all duration-300"
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 25px', borderRadius: '8px', color: '#ffffff', backgroundColor: '#000000ff', border: 'none', cursor: 'pointer', fontSize: '16px', boxShadow: '0 0 12px 3px rgba(164, 0, 255, 0.1), 0 0 28px 6px rgba(164, 0, 255, 0.25)' }}
+        >
+          <UserPlus size={22} color="#ffffff" /> Add Employee
         </button>
       </div>
 
-      {/* Search */}
-      <div className="card p-4 flex items-center gap-3">
-        <Search size={16} className="text-slate-400 flex-shrink-0" />
+      {/* Centered Search Bar */}
+      <div style={{ margin: '0 auto', display: 'flex', alignItems: 'center', gap: '16px', padding: '0 20px', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.05)', width: '100%', maxWidth: '800px', height: '60px', opacity: 100 }}>
+        <Search size={24} color="#ffffff" style={{ flexShrink: 0 }} />
         <input
-          className="flex-1 text-sm bg-transparent outline-none placeholder:text-slate-400"
+          style={{ flex: 1, fontSize: '18px', color: '#ffffff', backgroundColor: 'transparent', border: 'none', outline: 'none', height: '100%' }}
           placeholder="Search by name, email, or department…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -118,29 +181,30 @@ export default function EmployeesPage() {
 
       {error && <Alert type="error" message={error} />}
 
+      {/* Table Section */}
       {loading ? (
-        <div className="flex justify-center py-16"><Spinner size="lg" /></div>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}><Spinner size="lg" /></div>
       ) : employees.length === 0 ? (
-        <div className="card">
+        <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.05)', padding: '40px', textAlign: 'center' }}>
           <EmptyState
             icon={Users}
-            title="No employees found"
-            description={search ? "Try a different search term." : "Add your first employee to get started."}
-            action={!search && <button onClick={openCreate} className="btn-primary">Add Employee</button>}
+            title={<span style={{ color: '#ffffff', fontWeight: 'bold', fontSize: '20px' }}>No employees found</span>}
+            description={<span style={{ color: '#ffffff' }}>{search ? "Try a different search term." : "Add your first employee to get started."}</span>}
+            action={!search && <button onClick={openCreate} style={{ padding: '12px 24px', marginTop: '16px', borderRadius: '8px', color: '#ffffff', fontWeight: 'bold', backgroundColor: '#8400ff', border: 'none', cursor: 'pointer' }}>Add Employee</button>}
           />
         </div>
       ) : (
-        <div className="table-wrapper">
-          <table>
+        <div style={{ width: '100%', overflowX: 'auto', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', padding: '16px', boxSizing: 'border-box' }}>
+          <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th>Employee</th>
-                <th>Department</th>
-                <th>Self Score</th>
-                <th>Actual Score</th>
-                <th>Status</th>
-                <th>Joined</th>
-                <th>Actions</th>
+                <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#ffffff', fontSize: '14px', textTransform: 'uppercase' }}>Employee</th>
+                <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#ffffff', fontSize: '14px', textTransform: 'uppercase' }}>Department</th>
+                <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#ffffff', fontSize: '14px', textTransform: 'uppercase' }}>Self Score</th>
+                <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#ffffff', fontSize: '14px', textTransform: 'uppercase' }}>Actual Score</th>
+                <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#ffffff', fontSize: '14px', textTransform: 'uppercase' }}>Status</th>
+                <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#ffffff', fontSize: '14px', textTransform: 'uppercase' }}>Joined</th>
+                <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#ffffff', fontSize: '14px', textTransform: 'uppercase', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -148,41 +212,51 @@ export default function EmployeesPage() {
                 const selfDone = !!emp.selfAssessment;
                 const testDone = emp.testAttempts?.length > 0;
                 return (
-                  <tr key={emp.id}>
-                    <td>
-                      <div className="flex items-center gap-2.5">
+                  <tr key={emp.id} className="hover:bg-white/5 transition-colors">
+                    <td style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <Avatar name={emp.name} size="sm" />
                         <div>
-                          <p className="font-medium text-slate-800">{emp.name}</p>
-                          <p className="text-xs text-slate-400">{emp.email}</p>
+                          <p style={{ color: '#ffffff', fontSize: '16px', margin: 0 }}>{emp.name}</p>
+                          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)', margin: 0 }}>{emp.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td><span className="text-slate-500">{emp.department || "—"}</span></td>
-                    <td>
+                    <td style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: '#ffffff', fontWeight: '500' }}>{emp.department || "—"}</td>
+                    <td style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                       {selfDone
-                        ? <span className="font-medium text-brand-600">{formatPercent(emp.selfAssessment.overallPercentage)}</span>
-                        : <span className="text-slate-300">—</span>}
+                        ? <span style={{ fontWeight: 'bold', color: '#ffffff' }}>{formatPercent(emp.selfAssessment.overallPercentage)}</span>
+                        : <span style={{ color: 'rgba(255,255,255,0.3)' }}>—</span>}
                     </td>
-                    <td>
+                    <td style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                       {testDone
-                        ? <span className="font-medium text-emerald-600">{formatPercent(emp.testAttempts[0].scorePercentage)}</span>
-                        : <span className="text-slate-300">—</span>}
+                        ? <span style={{ fontWeight: 'bold', color: '#ffffff' }}>{formatPercent(emp.testAttempts[0].scorePercentage)}</span>
+                        : <span style={{ color: 'rgba(255,255,255,0.3)' }}>—</span>}
                     </td>
-                    <td>
-                      <div className="flex gap-1">
+                    <td style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ display: 'flex', gap: '8px' }}>
                         <Badge variant={selfDone ? "success" : "default"}>Self</Badge>
                         <Badge variant={testDone ? "success" : "default"}>Test</Badge>
                       </div>
                     </td>
-                    <td><span className="text-slate-500">{formatDate(emp.createdAt)}</span></td>
-                    <td>
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => openEdit(emp)} className="p-1.5 hover:bg-brand-50 text-brand-600 rounded-lg transition-colors" title="Edit">
-                          <Pencil size={14} />
+                    <td style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: '#ffffff', fontWeight: '500' }}>{formatDate(emp.createdAt)}</td>
+                    <td style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.05)', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px' }}>
+                        <button
+                          onClick={() => openEdit(emp)}
+                          className="hover:bg-[#8400ff] hover:border-transparent hover:shadow-[0_0_15px_rgba(132,0,255,0.6)] transition-all duration-300"
+                          style={{ padding: '10px', backgroundColor: 'rgba(255,255,255,0.1)', color: '#ffffff', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          title="Edit"
+                        >
+                          <Pencil size={18} color="#ffffff" />
                         </button>
-                        <button onClick={() => setConfirmId(emp.id)} className="p-1.5 hover:bg-red-50 text-red-500 rounded-lg transition-colors" title="Delete">
-                          <Trash2 size={14} />
+                        <button
+                          onClick={() => setConfirmId(emp.id)}
+                          className="hover:bg-red-600 hover:border-transparent hover:shadow-[0_0_15px_rgba(220,38,38,0.6)] transition-all duration-300"
+                          style={{ padding: '10px', backgroundColor: 'rgba(255,255,255,0.1)', color: '#ffffff', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          title="Delete"
+                        >
+                          <Trash2 size={18} color="#ffffff" />
                         </button>
                       </div>
                     </td>
@@ -191,40 +265,57 @@ export default function EmployeesPage() {
               })}
             </tbody>
           </table>
-          <div className="px-4 py-3 border-t border-surface-100 text-xs text-slate-500">
+          <div style={{ padding: '16px', fontSize: '14px', fontWeight: 'bold', color: '#ffffff', textAlign: 'right' }}>
             Showing {employees.length} of {data?.total ?? employees.length} employees
           </div>
         </div>
       )}
 
-      {/* Create / Edit Modal */}
-      <Modal
-        isOpen={!!modal}
-        onClose={() => setModal(null)}
-        title={modal?.mode === "create" ? "Add New Employee" : "Edit Employee"}
-        size="md"
-      >
-        {modal && (
-          <EmployeeForm
-            initial={modal.emp}
-            onSave={handleSave}
-            onCancel={() => setModal(null)}
-            loading={saving}
-            error={formError}
-          />
-        )}
-      </Modal>
+      {/* Forced Custom Overlay Modal for Create/Edit */}
+      {modal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', width: '100%', maxWidth: '600px', padding: '32px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+            <h2 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', margin: '0 0 24px 0' }}>
+              {modal.mode === "create" ? "Add New Employee" : "Edit Employee"}
+            </h2>
+            <EmployeeForm
+              initial={modal.emp}
+              onSave={handleSave}
+              onCancel={() => setModal(null)}
+              loading={saving}
+              error={formError}
+            />
+          </div>
+        </div>
+      )}
 
-      {/* Delete Confirm */}
-      <ConfirmDialog
-        isOpen={!!confirmId}
-        onClose={() => setConfirmId(null)}
-        onConfirm={handleDelete}
-        title="Delete Employee"
-        message="This will permanently delete the employee and all their assessment data. This action cannot be undone."
-        confirmLabel="Delete"
-        danger
-      />
+      {/* Forced Custom Overlay Modal for Delete */}
+      {confirmId && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', width: '100%', maxWidth: '450px', padding: '32px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', textAlign: 'center' }}>
+            <h2 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', margin: '0 0 16px 0' }}>Delete Employee</h2>
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', lineHeight: '1.5', margin: '0 0 32px 0' }}>
+              This will permanently delete the employee and all their assessment data. This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+              <button
+                onClick={() => setConfirmId(null)}
+                className="hover:bg-white/20 transition-all duration-300"
+                style={{ padding: '14px 28px', borderRadius: '8px', color: '#ffffff', fontWeight: 'bold', backgroundColor: 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="hover:bg-red-500 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-300"
+                style={{ padding: '14px 28px', borderRadius: '8px', color: '#ffffff', fontWeight: 'bold', backgroundColor: '#dc2626', border: 'none', cursor: 'pointer' }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
