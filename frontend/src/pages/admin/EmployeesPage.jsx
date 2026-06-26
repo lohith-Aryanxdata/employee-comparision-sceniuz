@@ -28,7 +28,6 @@ function EmployeeForm({ initial = {}, onSave, onCancel, loading, error }) {
             style={{ width: '100%', padding: '14px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', color: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
             value={form.name}
             onChange={set("name")}
-            placeholder="Aarav Shah"
             required
           />
         </div>
@@ -39,7 +38,6 @@ function EmployeeForm({ initial = {}, onSave, onCancel, loading, error }) {
             type="email"
             value={form.email}
             onChange={set("email")}
-            placeholder="aarav@company.io"
             required
           />
         </div>
@@ -49,7 +47,6 @@ function EmployeeForm({ initial = {}, onSave, onCancel, loading, error }) {
             style={{ width: '100%', padding: '14px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', color: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
             value={form.department}
             onChange={set("department")}
-            placeholder="Engineering"
           />
         </div>
         <div style={{ gridColumn: '1 / -1' }}>
@@ -59,7 +56,6 @@ function EmployeeForm({ initial = {}, onSave, onCancel, loading, error }) {
             type="password"
             value={form.password}
             onChange={set("password")}
-            placeholder="••••••••"
           />
         </div>
       </div>
@@ -275,8 +271,18 @@ export default function EmployeesPage() {
 
       {/* Forced Custom Overlay Modal for Create/Edit */}
       {modal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', width: '100%', maxWidth: '600px', padding: '32px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(132,0,255,0.15) 0%, rgba(20,10,40,0.85) 100%)',
+            backdropFilter: 'blur(40px)',
+            WebkitBackdropFilter: 'blur(40px)',
+            border: '1px solid rgba(132,0,255,0.4)',
+            borderRadius: '16px',
+            width: '100%',
+            maxWidth: '600px',
+            padding: '32px',
+            boxShadow: '0 0 40px rgba(132,0,255,0.2), inset 0 1px 0 rgba(255,255,255,0.1)',
+          }}>
             <h2 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', margin: '0 0 24px 0' }}>
               {modal.mode === "create" ? "Add New Employee" : "Edit Employee"}
             </h2>
@@ -293,8 +299,8 @@ export default function EmployeesPage() {
 
       {/* Forced Custom Overlay Modal for Delete */}
       {confirmId && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', width: '100%', maxWidth: '450px', padding: '32px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', textAlign: 'center' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)', backdropFilter: 'blur(40px) saturate(200%)', WebkitBackdropFilter: 'blur(40px) saturate(200%)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', width: '100%', maxWidth: '450px', padding: '32px', boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)', textAlign: 'center' }}>
             <h2 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', margin: '0 0 16px 0' }}>Delete Employee</h2>
             <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', lineHeight: '1.5', margin: '0 0 32px 0' }}>
               This will permanently delete the employee and all their assessment data. This action cannot be undone.
@@ -316,18 +322,17 @@ export default function EmployeesPage() {
               </button>
             </div>
           </div>
-
-          <BubbleMenu
-            menuBg="#8400ff"
-            menuContentColor="#ffffff"
-            items={[
-              { label: 'Employees', href: '/admin/employees', rotation: 0, hoverStyles: { bgColor: '#a855f7', textColor: '#ffffff' } },
-              { label: 'Questions', href: '/admin/questions', rotation: 0, hoverStyles: { bgColor: '#10b981', textColor: '#ffffff' } },
-              { label: 'Analytics', href: '/admin/analytics', rotation: 0, hoverStyles: { bgColor: '#f59e0b', textColor: '#ffffff' } }
-            ]}
-          />
         </div>
       )}
+      <BubbleMenu
+        menuBg="#8400ff"
+        menuContentColor="#ffffff"
+        items={[
+          { label: 'Employees', href: '/admin/employees', rotation: 0, hoverStyles: { bgColor: '#a855f7', textColor: '#ffffff' } },
+          { label: 'Questions', href: '/admin/questions', rotation: 0, hoverStyles: { bgColor: '#10b981', textColor: '#ffffff' } },
+          { label: 'Analytics', href: '/admin/analytics', rotation: 0, hoverStyles: { bgColor: '#f59e0b', textColor: '#ffffff' } }
+        ]}
+      />
     </div>
-  );
+  )
 }

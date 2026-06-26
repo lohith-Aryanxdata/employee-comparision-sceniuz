@@ -22,12 +22,57 @@ export function Spinner({ size = "md", className = "" }) {
 
 export function PageLoader() {
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#070B14" }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-        <Spinner size="xl" />
-        <p style={{ fontSize: "13px", color: "rgba(148,163,184,0.6)", margin: 0 }}>Loading…</p>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#070B14", overflow: "hidden", position: "relative" }}>
+
+      {/* Ambient glow blobs */}
+      <div style={{ position: "absolute", top: "20%", left: "30%", width: "400px", height: "400px", borderRadius: "50%", background: "rgba(132,0,255,0.08)", filter: "blur(80px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "20%", right: "25%", width: "300px", height: "300px", borderRadius: "50%", background: "rgba(99,102,241,0.06)", filter: "blur(60px)", pointerEvents: "none" }} />
+
+      {/* Center content */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "24px", zIndex: 1 }}>
+
+        {/* Animated ring */}
+        <div style={{ position: "relative", width: "72px", height: "72px" }}>
+          <svg width="72" height="72" style={{ transform: "rotate(-90deg)", position: "absolute", top: 0, left: 0 }}>
+            <circle cx="36" cy="36" r="30" stroke="rgba(255,255,255,0.05)" strokeWidth="3" fill="none" />
+            <circle
+              cx="36" cy="36" r="30"
+              stroke="url(#loaderGrad)" strokeWidth="3" fill="none"
+              strokeDasharray="188.5"
+              strokeDashoffset="47"
+              strokeLinecap="round"
+              style={{ animation: "loaderSpin 1.2s linear infinite" }}
+            />
+            <defs>
+              <linearGradient id="loaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#8400ff" />
+                <stop offset="100%" stopColor="#c084fc" />
+              </linearGradient>
+            </defs>
+          </svg>
+          {/* Inner dot */}
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#c084fc", boxShadow: "0 0 12px rgba(192,132,252,0.8)", animation: "loaderPulse 1.2s ease-in-out infinite" }} />
+          </div>
+        </div>
+
+        {/* Text */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
+          <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.7)", margin: 0, letterSpacing: "0.3px" }}>Loading</p>
+          {/* Animated dots */}
+          <div style={{ display: "flex", gap: "5px" }}>
+            {[0, 1, 2].map((i) => (
+              <div key={i} style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#8400ff", animation: `loaderDot 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+            ))}
+          </div>
+        </div>
       </div>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+
+      <style>{`
+        @keyframes loaderSpin { to { transform: rotate(270deg); } }
+        @keyframes loaderPulse { 0%, 100% { opacity: 0.4; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+        @keyframes loaderDot { 0%, 100% { opacity: 0.2; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-4px); } }
+      `}</style>
     </div>
   );
 }

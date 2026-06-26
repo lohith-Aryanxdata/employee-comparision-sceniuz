@@ -91,6 +91,7 @@ export default function TestPage() {
     })();
   }, []);
 
+
   const submitTest = useCallback(async (auto = false) => {
     if (autoSubmittedRef.current) return;
     autoSubmittedRef.current = true;

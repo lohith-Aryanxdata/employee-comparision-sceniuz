@@ -154,9 +154,9 @@ export default function QuestionsPage() {
       )}
 
       {modal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#111', padding: '32px', borderRadius: '16px', width: '100%', maxWidth: '600px' }}>
-            <h2 style={{ color: '#fff', margin: '0 0 24px 0' }}>{modal.mode === "create" ? "Add Question" : "Edit Question"}</h2>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)', backdropFilter: 'blur(40px) saturate(200%)', WebkitBackdropFilter: 'blur(40px) saturate(200%)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', width: '100%', maxWidth: '600px', padding: '32px', boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)' }}>
+            <h2 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', margin: '0 0 24px 0' }}> {modal.mode === "create" ? "Add Question" : "Edit Question"}</h2>
             <QuestionForm initial={modal.question} onSave={handleSave} onCancel={() => setModal(null)} loading={saving} error={formError} />
           </div>
         </div>
@@ -164,9 +164,9 @@ export default function QuestionsPage() {
 
       {/* Delete Confirmation Modal */}
       {confirmId && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', width: '100%', maxWidth: '450px', padding: '32px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', textAlign: 'center' }}>
-            <h2 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', margin: '0 0 16px 0' }}>Delete Question</h2>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)', backdropFilter: 'blur(40px) saturate(200%)', WebkitBackdropFilter: 'blur(40px) saturate(200%)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '16px', width: '100%', maxWidth: '600px', padding: '32px', boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)' }}>
+            <h2 style={{ color: '#ffffff', fontSize: '28px', fontWeight: '900', margin: '0 0 24px 0' }}> Delete question </h2>
             <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', lineHeight: '1.5', margin: '0 0 32px 0' }}>
               Are you sure you want to delete this question? This action cannot be undone.
             </p>

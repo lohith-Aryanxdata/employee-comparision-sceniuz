@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useApi } from "@/hooks/useApi";
@@ -6,15 +6,9 @@ import { userService } from "@/services";
 import { ScoreRing, CAIMeter, Spinner, Alert } from "@/components/ui";
 import { formatPercent } from "@/utils/helpers";
 import { Brain, ClipboardCheck, Trophy, ArrowRight, CheckCircle, Clock, Lock } from "lucide-react";
-import FloatingLines from "@/component/FloatingLines/FloatingLines";
 import BorderGlow from "@/component/BorderGlow/BorderGlow";
 
-const STAT_CARDS = [
-    { key: "selfScore", label: "Self score", sub: "Your perceived level", color: "#c084fc", border: "rgba(168,85,247,0.2)" },
-    { key: "actualScore", label: "Actual score", sub: "MCQ test result", color: "#10b981", border: "rgba(16,185,129,0.2)" },
-    { key: "cai", label: "Accuracy index", sub: "Self-perception accuracy", color: null, border: null },
-    { key: "status", label: "Status", sub: "Assessments completed", color: "#60a5fa", border: "rgba(59,130,246,0.2)" },
-];
+const FloatingLines = lazy(() => import("@/component/FloatingLines/FloatingLines"));
 
 function caiColor(v) {
     if (v == null) return "#fbbf24";
@@ -24,45 +18,16 @@ function caiBorder(v) {
     if (v == null) return "rgba(251,191,36,0.2)";
     return v >= 80 ? "rgba(16,185,129,0.2)" : v >= 60 ? "rgba(251,191,36,0.2)" : "rgba(248,113,113,0.2)";
 }
-
 function getGlowProps(color) {
-    if (color === "#c084fc") {
-        return {
-            colors: ['#c084fc', '#a855f7', '#8b5cf6'],
-            glowColor: "274 95 75"
-        };
-    }
-    if (color === "#10b981") {
-        return {
-            colors: ['#10b981', '#059669', '#34d399'],
-            glowColor: "159 84 39"
-        };
-    }
-    if (color === "#fbbf24") {
-        return {
-            colors: ['#fbbf24', '#f59e0b', '#d97706'],
-            glowColor: "43 96 56"
-        };
-    }
-    if (color === "#f87171") {
-        return {
-            colors: ['#f87171', '#ef4444', '#dc2626'],
-            glowColor: "0 91 71"
-        };
-    }
-    if (color === "#60a5fa") {
-        return {
-            colors: ['#60a5fa', '#3b82f6', '#2563eb'],
-            glowColor: "213 93 68"
-        };
-    }
-    return {
-        colors: ['#c084fc', '#f472b6', '#38bdf8'],
-        glowColor: "274 95 75"
-    };
+    if (color === "#c084fc") return { colors: ['#c084fc', '#a855f7', '#8b5cf6'], glowColor: "274 95 75" };
+    if (color === "#10b981") return { colors: ['#10b981', '#059669', '#34d399'], glowColor: "159 84 39" };
+    if (color === "#fbbf24") return { colors: ['#fbbf24', '#f59e0b', '#d97706'], glowColor: "43 96 56" };
+    if (color === "#f87171") return { colors: ['#f87171', '#ef4444', '#dc2626'], glowColor: "0 91 71" };
+    if (color === "#60a5fa") return { colors: ['#60a5fa', '#3b82f6', '#2563eb'], glowColor: "213 93 68" };
+    return { colors: ['#c084fc', '#f472b6', '#38bdf8'], glowColor: "274 95 75" };
 }
 
-function StatCard({ label, value, sub, color, border }) {
+function StatCard({ label, value, sub, color }) {
     const glow = getGlowProps(color || caiColor(value));
     return (
         <BorderGlow
@@ -73,18 +38,18 @@ function StatCard({ label, value, sub, color, border }) {
             glowRadius={30}
             glowIntensity={0.8}
             coneSpread={25}
-            animated={true}
+            animated={false}
             colors={glow.colors}
         >
             <div style={{ padding: "20px 18px", width: "100%", boxSizing: "border-box" }}>
                 <div style={{ fontSize: "10px", color: "#ffffff", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "10px" }}>
                     {label}
                 </div>
-        <div style={{ fontSize: "28px", fontWeight: 500, color: color || caiColor(value), fontFamily: "monospace" }}>{value}</div>
-        <div style={{ fontSize: "11px", color: "#ffffff", marginTop: "6px" }}>{sub}</div>
-      </div>
-    </BorderGlow>
-  );
+                <div style={{ fontSize: "28px", fontWeight: 500, color: color || caiColor(value), fontFamily: "monospace" }}>{value}</div>
+                <div style={{ fontSize: "11px", color: "#ffffff", marginTop: "6px" }}>{sub}</div>
+            </div>
+        </BorderGlow>
+    );
 }
 
 function StatusBadge({ done }) {
@@ -157,10 +122,6 @@ function StepCard({ icon: Icon, title, description, to, done, disabled, accentCo
     );
 }
 
-const FLOATING_LINES_ENABLED_WAVES = ['top', 'middle', 'bottom'];
-const FLOATING_LINES_COUNT = [10, 15, 20];
-const FLOATING_LINES_DISTANCE = [8, 6, 4];
-
 export default function EmployeeDashboard() {
     const { user } = useAuth();
     const { data, loading, error } = useApi(() => userService.getDashboard());
@@ -180,15 +141,17 @@ export default function EmployeeDashboard() {
     return (
         <div style={{ position: "relative", minHeight: "100vh", padding: "32px", display: "flex", flexDirection: "column", gap: "28px" }}>
             <div style={{ position: "fixed", inset: 0, zIndex: -1, pointerEvents: "none", backgroundColor: "#070B14" }}>
-                <FloatingLines
-                    enabledWaves={FLOATING_LINES_ENABLED_WAVES}
-                    lineCount={FLOATING_LINES_COUNT}
-                    lineDistance={FLOATING_LINES_DISTANCE}
-                    bendRadius={5.0}
-                    bendStrength={-0.5}
-                    interactive={true}
-                    parallax={true}
-                />
+                <Suspense fallback={null}>
+                    <FloatingLines
+                        enabledWaves={['top', 'middle', 'bottom']}
+                        lineCount={[5, 8, 10]}
+                        lineDistance={[8, 6, 4]}
+                        bendRadius={5.0}
+                        bendStrength={-0.5}
+                        interactive={true}
+                        parallax={false}
+                    />
+                </Suspense>
             </div>
 
             {/* Welcome */}
@@ -206,10 +169,10 @@ export default function EmployeeDashboard() {
 
             {/* Stat cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "12px" }}>
-                <StatCard label="Self Assessment Score" value={d.selfScore != null ? formatPercent(d.selfScore) : "—"} sub="Percieved Score" color="#c084fc" border="rgba(168,85,247,0.2)" />
-                <StatCard label="Test Score" value={d.actualScore != null ? formatPercent(d.actualScore) : "—"} sub="MCQ test result" color="#10b981" border="rgba(16,185,129,0.2)" />
-                <StatCard label="Accuracy index" value={d.cai != null ? formatPercent(d.cai) : "—"} sub="Accuracy Score" color={caiColor(d.cai)} border={caiBorder(d.cai)} />
-                <StatCard label="Status" value={d.testCompleted ? "All done" : `${completed} / 2`} sub="Assessments completed" color="#60a5fa" border="rgba(59,130,246,0.2)" />
+                <StatCard label="Self Assessment Score" value={d.selfScore != null ? formatPercent(d.selfScore) : "—"} sub="Perceived Score" color="#c084fc" />
+                <StatCard label="Test Score" value={d.actualScore != null ? formatPercent(d.actualScore) : "—"} sub="MCQ test result" color="#10b981" />
+                <StatCard label="Accuracy Index" value={d.cai != null ? formatPercent(d.cai) : "—"} sub="Accuracy Score" color={caiColor(d.cai)} />
+                <StatCard label="Status" value={d.testCompleted ? "All done" : `${completed} / 2`} sub="Assessments completed" color="#60a5fa" />
             </div>
 
             {/* Score rings */}
@@ -256,8 +219,8 @@ export default function EmployeeDashboard() {
                         title="Results & leaderboard"
                         description="See your scores, confidence accuracy index, and where you rank"
                         to="/results"
-                        done={false}
-                        disabled={!d.testCompleted}
+                        done={d.selfAssessmentCompleted && d.testCompleted}
+                        disabled={!(d.selfAssessmentCompleted && d.testCompleted)}
                         accentColor="#fbbf24"
                         accentBg="rgba(251,191,36,0.08)"
                         accentBorder="rgba(251,191,36,0.2)"
